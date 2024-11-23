@@ -12,19 +12,17 @@ logger = logging.getLogger(__name__)
 BOOTSTRAP_SERVERS = "localhost:9092"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO)
-    logger.info(f'RUnning Kafka Bootstrap servers on {BOOTSTRAP_SERVERS}')
-
+    logger.info(f"RUnning Kafka Bootstrap servers on {BOOTSTRAP_SERVERS}")
 
     producer = KafkaProducer(
         bootstrap_servers=BOOTSTRAP_SERVERS, security_protocol="PLAINTEXT"
     )
 
-
     keys = ["A", "B", "C", "D"]
-    
+
     while True:
         key = keys[random.randint(0, len(keys) - 1)]
         value = random.randint(0, 1000)

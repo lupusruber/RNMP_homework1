@@ -29,7 +29,7 @@ OUT_OFF_ORDERNESS = 5
 
 class StatsToJSONMapper(MapFunction):
 
-    def map(self, value):
+    def map(self, value) -> str:
 
         key, start_ts, end_ts, min_element, count, average, max_element = value
         record = dict(
@@ -46,11 +46,14 @@ class StatsToJSONMapper(MapFunction):
 
 class WindowInfoToJSONMapper(MapFunction):
 
-    def map(self, value):
+    def map(self, value) -> str:
 
-        key, start_ts, end_ts, min_element, count, average, max_element = value
+        key, start_ts, end_ts, _, count, _, _ = value
         record = dict(key=key, start_ts=start_ts, end_ts=end_ts, count=count)
         return json.dumps(record)
+
+
+# Create a ReducingState/AggregatingState instead of PWF
 
 
 class WindowStatistics(ProcessWindowFunction):
@@ -84,8 +87,8 @@ class TimestampGetter(TimestampAssigner):
         return int(value[2])
 
 
-def create_kafka_source(topic: str, bootstrap_servers: str):
-    
+def create_kafka_source(topic: str, bootstrap_servers: str) -> FlinkKafkaConsumer:
+
     kafka_source = FlinkKafkaConsumer(
         topics=topic,
         deserialization_schema=SimpleStringSchema(),
@@ -95,50 +98,45 @@ def create_kafka_source(topic: str, bootstrap_servers: str):
         },
     ).set_start_from_earliest()
 
-    logger.info(f'Created Flink-Kafka source for topic {topic}')
+    logger.info(f"Created Flink-Kafka source for topic {topic}")
 
     return kafka_source
 
 
-def create_kafka_sink(topic: str, bootstrap_servers: str):
+def create_kafka_sink(topic: str, bootstrap_servers: str) -> FlinkKafkaProducer:
 
     kafka_sink = FlinkKafkaProducer(
         topic=topic,
         serialization_schema=SimpleStringSchema(),
         producer_config={
             "bootstrap.servers": bootstrap_servers,
-            "group.id": "big-data-producers",
         },
     )
 
-    logger.info(f'Created Flink-Kafka sink for topic {topic}')
-
+    logger.info(f"Created Flink-Kafka sink for topic {topic}")
 
     return kafka_sink
 
 
-if __name__ == '__main__':
-    
+if __name__ == "__main__":
+
     logging.basicConfig(level=logging.INFO)
 
-    logger.info(f'Running Flink Application with jars: {jar_paths}')
-    logger.info(f'RUnning Kafka Bootstrap servers on {BOOTSTRAP_SERVERS}')
+    logger.info(f"Running Flink Application with jars: {jar_paths}")
+    logger.info(f"RUnning Kafka Bootstrap servers on {BOOTSTRAP_SERVERS}")
 
     env = StreamExecutionEnvironment.get_execution_environment()
     env.set_stream_time_characteristic(TimeCharacteristic.EventTime)
     env.set_parallelism(1)
     env.add_jars(*jar_paths)
 
-
     kafka_source = create_kafka_source(TOPIC, BOOTSTRAP_SERVERS)
     kafka_sink_1 = create_kafka_sink(OUTPUT_TOPIC_1, BOOTSTRAP_SERVERS)
     kafka_sink_2 = create_kafka_sink(OUTPUT_TOPIC_2, BOOTSTRAP_SERVERS)
 
-    
     watermark_strategy = WatermarkStrategy.for_bounded_out_of_orderness(
         Duration.of_seconds(OUT_OFF_ORDERNESS)
-    ).with_timestamp_assigner(TimestampGetter())  
-
+    ).with_timestamp_assigner(TimestampGetter())
 
     data_stream = env.add_source(kafka_source)
 
@@ -146,10 +144,14 @@ if __name__ == '__main__':
         lambda value: json.loads(value),
         output_type=Types.MAP(Types.STRING(), Types.STRING()),
     ).map(
-        lambda record: (record["key"], float(record["value"]), int(record["timestamp"])),
+        # Change this from casting to dataclass
+        lambda record: (
+            record["key"],
+            float(record["value"]),
+            int(record["timestamp"]),
+        ),
         output_type=Types.TUPLE([Types.STRING(), Types.FLOAT(), Types.LONG()]),
     )
-
 
     processed_stream = (
         parsed_stream.assign_timestamps_and_watermarks(watermark_strategy)
@@ -158,7 +160,7 @@ if __name__ == '__main__':
         .process(
             WindowStatistics(),
             output_type=Types.TUPLE(
-                # return [(key, start_ts, end_ts, min_element, count, average, max_element)]
+                # [(key, start_ts, end_ts, min_element, count, average, max_element)]
                 [
                     Types.STRING(),
                     Types.LONG(),
@@ -171,12 +173,13 @@ if __name__ == '__main__':
             ),
         )
     )
-    
+
     stats_stream = processed_stream.map(StatsToJSONMapper(), output_type=Types.STRING())
-    info_stream = processed_stream.map(WindowInfoToJSONMapper(), output_type=Types.STRING())
+    info_stream = processed_stream.map(
+        WindowInfoToJSONMapper(), output_type=Types.STRING()
+    )
 
     info_stream.add_sink(kafka_sink_1)
     stats_stream.add_sink(kafka_sink_2)
-
 
     env.execute("Kafka Data Stream")
