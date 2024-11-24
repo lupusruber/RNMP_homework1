@@ -24,10 +24,10 @@ if __name__ == "__main__":
     keys = ["A", "B", "C", "D"]
 
     while True:
-        key = keys[random.randint(0, len(keys) - 1)]
+        key = random.choice(keys)
         value = random.randint(0, 1000)
         record = {"key": key, "value": value, "timestamp": int(time.time() * 1000)}
 
-        logging.info(f"Generated record: {json.dumps(record)}")
+        logger.info(f" Generated record: {json.dumps(record)}")
         producer.send(topic="sensors", value=json.dumps(record).encode("utf-8"))
         time.sleep(random.randint(500, 2000) / 1000.0)

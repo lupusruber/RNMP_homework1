@@ -24,7 +24,7 @@ if __name__ == "__main__":
     try:
         for message in consumer:
             logger.info(
-                f"Topic {message.topic} message: {message.value.decode('utf-8')}"
+                f" Topic {message.topic} message: {message.value.decode('utf-8')}"
             )
     except KeyboardInterrupt:
         pass
