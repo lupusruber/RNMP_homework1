@@ -1,7 +1,7 @@
 
 # Рударење на масивни податоци: Домашна работа 1
 
-This project allows you to run a set of Python scripts in a Docker environment, simulating message production, transformation, and consumption. All the dependencies are handled through a simple bash script that installs the required packages and runs the necessary containers.
+This project runs a set of Python Kafka and Flink scripts in a Docker environment, simulating message production & consumption using Kafka, and transformation using Flink. All the dependencies are handled through a simple bash script that installs the required packages and runs the necessary Docker containers.
 
 ## Main technologies
 
@@ -30,8 +30,8 @@ To run the project, you only need to have the following installed on your Ubuntu
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/lupusruber/RNMP_homework1.git
+   cd RNMP_homework1
    ```
 
 2. Run the `start.sh` script:
