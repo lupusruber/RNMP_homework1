@@ -71,6 +71,10 @@ The `start.sh` script creates a virtual environment using Python 3, installs the
 
 ## Troubleshooting
 
+- **Kafka Not Running:** If you are not using Docker, ensure that Kafka is running on the specified host (localhost:9092).
+- **Dependencies:** Ensure all dependencies in requirements.txt are installed in the virtual environment.
+- **Kafka Connection Issues:** Double-check your Kafka configurations in the scripts, especially BOOTSTRAP_SERVERS.
+
 If you encounter any issues, make sure you have Docker, Git, and Python installed on your machine. Also, ensure that your Docker daemon is running before starting the script.
 
 For further assistance, please refer to the documentation or raise an issue in the repository.
