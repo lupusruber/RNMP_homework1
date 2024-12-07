@@ -57,6 +57,15 @@ To run the project, you only need to have the following installed on your Ubuntu
 
 4. To stop the process, simply press `Ctrl + C`. The script will clean up all running processes and shut down the Docker containers.
 
+## Review Kafka and Flink Messages using the Kafka UI
+
+You can review the messages produced by Kafka and Flink by navigating to the Kafka UI at the following address:
+
+[http://localhost:8080](http://localhost:8080)
+
+Make sure your Kafka and Flink services are running and accessible, and you'll be able to view topics, messages, and other relevant information about the data streams.
+
+
 ## Cleanup
 
 To stop the processes and bring down Docker containers, simply press `Ctrl + C` at any time. This will kill all running processes and clean up the containers.
