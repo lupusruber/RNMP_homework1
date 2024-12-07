@@ -9,7 +9,7 @@ import logging
 from flink_classes import *
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("flink_transforms_script")
 
 jar_paths = [f"file://{file.absolute()}" for file in Path("jars").glob("*.jar")]
 
@@ -19,7 +19,7 @@ OUTPUT_TOPIC_2 = "results2"
 BOOTSTRAP_SERVERS = "localhost:9092"
 
 WINDOW_TIME = 10
-OUT_OF_ORDERNESS = 5
+OUT_OF_ORDERNESS = 2
 
 
 if __name__ == "__main__":

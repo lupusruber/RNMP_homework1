@@ -2,11 +2,13 @@ import json
 import time
 import logging
 import random
+import sys
+
 
 from kafka import KafkaProducer
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("kafka_producer_script")
 
 
 BOOTSTRAP_SERVERS = "localhost:9092"
@@ -24,10 +26,19 @@ if __name__ == "__main__":
     keys = ["A", "B", "C", "D"]
 
     while True:
+        
         key = random.choice(keys)
         value = random.randint(0, 1000)
         record = {"key": key, "value": value, "timestamp": int(time.time() * 1000)}
 
-        logger.info(f" Generated record: {json.dumps(record)}")
-        producer.send(topic="sensors", value=json.dumps(record).encode("utf-8"))
-        time.sleep(random.randint(500, 2000) / 1000.0)
+        try:
+           
+            value = json.dumps(record)
+            logger.info(f" Generated record: {value}")
+            producer.send(topic="sensors", value=value.encode("utf-8"))
+            time.sleep(random.randint(500, 2000) / 1000.0)
+
+        except KeyboardInterrupt:
+            logger.info("Exiting gracefully...")
+            producer.close()
+            sys.exit(0)

@@ -5,7 +5,7 @@ BOOTSTRAP_SERVERS = "localhost:9092"
 topics = ["results1", "results2"]
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("kafka_consumer_script")
 
 
 if __name__ == "__main__":
