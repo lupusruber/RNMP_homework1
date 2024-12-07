@@ -9,6 +9,12 @@ This project runs a set of Python Kafka and Flink scripts in a Docker environmen
 - Flink
 - Docker
 
+## Documentation
+
+You can find the full documentation for the project in the PDF file below:
+
+[Project Documentation](https://github.com/lupusruber/RNMP_homework1/blob/master/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%98%D0%B0%20%D0%B7%D0%B0%20Flink%20%D0%B0%D0%BF%D0%BB%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D1%98%D0%B0%D1%82%D0%B0.pdf)
+
 ## Requirements
 
 To run the project, you only need to have the following installed on your Ubuntu machine:
