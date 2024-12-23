@@ -1,7 +1,7 @@
 
 # Рударење на масивни податоци: Домашна работа 1
 
-This project runs a set of Python Kafka and Flink scripts in a Docker environment, simulating message production & consumption using Kafka, and transformation using Flink. All the dependencies are handled through a simple bash script that installs the required packages and runs the necessary Docker containers.
+This project runs a set of Python Kafka and Flink scripts in a Docker environment, simulating message production & consumption using Kafka, and transformation using Flink. All the dependencies are handled through a simple bash script that installs the required packages (within a Python venv) and runs the necessary Docker containers.
 
 ## Main technologies
 
@@ -63,27 +63,14 @@ You can review the messages produced by Kafka and Flink by navigating to the Kaf
 
 [http://localhost:8080](http://localhost:8080)
 
-Make sure your Kafka and Flink services are running and accessible, and you'll be able to view topics, messages, and other relevant information about the data streams.
-
-
 ## Cleanup
 
 To stop the processes and bring down Docker containers, simply press `Ctrl + C` at any time. This will kill all running processes and clean up the containers.
-
-## Docker Setup
-
-Make sure Docker is installed and running on your system. The `start.sh` script will take care of running `docker-compose` to set up the containers.
-
-## Python Virtual Environment
-
-The `start.sh` script creates a virtual environment using Python 3, installs the required dependencies, and activates the environment automatically.
 
 ## Troubleshooting
 
 - **Kafka Not Running:** If you are not using Docker, ensure that Kafka is running on the specified host (localhost:9092).
 - **Dependencies:** Ensure all dependencies in requirements.txt are installed in the virtual environment.
 - **Kafka Connection Issues:** Double-check your Kafka configurations in the scripts, especially BOOTSTRAP_SERVERS.
-
-If you encounter any issues, make sure you have Docker, Git, and Python installed on your machine. Also, ensure that your Docker daemon is running before starting the script.
 
 For further assistance, please refer to the documentation or raise an issue in the repository.
